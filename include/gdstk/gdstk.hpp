@@ -33,6 +33,7 @@ LICENSE file or <http://www.boost.org/LICENSE_1_0.txt>
 #include "curve.hpp"
 #include "flexpath.hpp"
 #include "gdsii.hpp"
+#include "gdstk_c_interface.h"
 #include "gdswriter.hpp"
 #include "label.hpp"
 #include "library.hpp"

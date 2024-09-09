@@ -1,0 +1,20 @@
+LIBRARY "gdstk"
+EXPORTS
+    gdstk_read_gds
+    gdstk_library_free
+    gdstk_library_get_name
+    gdstk_library_get_cell_count
+    gdstk_library_get_cell
+    gdstk_cell_get_name
+    gdstk_cell_get_polygons
+    gdstk_cell_get_paths
+    gdstk_cell_get_references
+    gdstk_polygon_get_points
+    gdstk_polygon_get_layer
+    gdstk_path_get_points
+    gdstk_path_get_width
+    gdstk_path_get_layer
+    gdstk_reference_get_cell_name
+    gdstk_reference_get_position
+    gdstk_reference_get_rotation
+    gdstk_reference_get_magnification
