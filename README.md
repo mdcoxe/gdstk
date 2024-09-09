@@ -1,3 +1,26 @@
+# Modifications from Heitzmann/GDSTK
+- Allows creation of gdstk.dll 
+- Exposes, some, not all, functions to allow for building of wrappers
+
+## DLL Creation
+I used vcpkg to install QHull and ZLib.
+```
+$ vcpkg install
+
+$ cmake -S . -B build -DCMAKE_TOOLCHAIN_FILE=C:/Path/to/vcpkg.cmake -DZLIB_INCLUDE_DIR=C:/path-to/vcpkg/installed/x64-windows/include -DZLIB_LIBRARY=C:/path-to/vcpkg/installed/x64-windows/lib/zlib.lib 
+
+$ cmake --build build --target install
+```
+### DLL Location
+Once compiled:
+- GDSTK dll will be located in:  
+```build/src/Debug/gdstk.dll```
+- DLL for QHull and ZLib will be located in:  
+```vcpkg_installed/x64-windows/debug/bin/```
+- These dll's should be included where gdstk.dll is used(In the case of Unity all three should be located in ```Assets/Plugins```):  
+```qhull_rd.dll``` and ```zlibd1.dll```
+
+
 # GDSTK
 
 [![Boost Software License - Version 1.0](https://img.shields.io/github/license/heitzmann/gdstk.svg)](https://www.boost.org/LICENSE_1_0.txt)
