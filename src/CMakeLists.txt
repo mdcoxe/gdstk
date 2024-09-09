@@ -8,7 +8,6 @@ if(NOT ZLIB_FOUND)
     else()
         message(FATAL_ERROR "ZLIB headers were not found, either via find_package or env variable")
     endif()
-
     # Use normal library-finding methods first
     find_library(ZLIB_LIBRARIES zlib)
     # But give precedence to user-set library path
@@ -32,6 +31,7 @@ set(HEADER_LIST
     "${gdstk_SOURCE_DIR}/include/gdstk/font.hpp"
     "${gdstk_SOURCE_DIR}/include/gdstk/gdsii.hpp"
     "${gdstk_SOURCE_DIR}/include/gdstk/gdstk.hpp"
+    "${gdstk_SOURCE_DIR}/include/gdstk/gdstk_c_interface.h"
     "${gdstk_SOURCE_DIR}/include/gdstk/gdswriter.hpp"
     "${gdstk_SOURCE_DIR}/include/gdstk/label.hpp"
     "${gdstk_SOURCE_DIR}/include/gdstk/library.hpp"
@@ -50,7 +50,8 @@ set(HEADER_LIST
     "${gdstk_SOURCE_DIR}/include/gdstk/style.hpp"
     "${gdstk_SOURCE_DIR}/include/gdstk/tagmap.hpp"
     "${gdstk_SOURCE_DIR}/include/gdstk/utils.hpp"
-    "${gdstk_SOURCE_DIR}/include/gdstk/vec.hpp")
+    "${gdstk_SOURCE_DIR}/include/gdstk/vec.hpp"
+)
 
 set(SOURCE_LIST
     cell.cpp
@@ -58,6 +59,7 @@ set(SOURCE_LIST
     curve.cpp
     flexpath.cpp
     gdsii.cpp
+    gdstk_c_interface.cpp
     label.cpp
     library.cpp
     oasis.cpp
@@ -69,11 +71,16 @@ set(SOURCE_LIST
     repetition.cpp
     robustpath.cpp
     style.cpp
-    utils.cpp)
+    utils.cpp
+)
 
-add_library(gdstk ${SOURCE_LIST} ${HEADER_LIST})
+add_library(gdstk SHARED ${SOURCE_LIST} ${HEADER_LIST} gdstk.def)
 
 target_compile_features(gdstk PUBLIC cxx_std_11)
+
+set_target_properties(gdstk PROPERTIES LINK_FLAGS "/DEF:${CMAKE_SOURCE_DIR}/gdstk.def")
+
+set_target_properties(gdstk PROPERTIES WINDOWS_EXPORT_ALL ON)
 
 set_target_properties(gdstk PROPERTIES POSITION_INDEPENDENT_CODE ON)
 
@@ -84,12 +91,14 @@ target_include_directories(gdstk PUBLIC
     $<BUILD_INTERFACE:${gdstk_SOURCE_DIR}/external>
     $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
     ${ZLIB_INCLUDE_DIRS}
-    ${QHULL_INCLUDE_DIRS})
+    ${QHULL_INCLUDE_DIRS}
+)
 
 target_link_libraries(gdstk
     ${ZLIB_LIBRARIES}
     ${QHULL_LIBRARIES}
-    clipper)
+    clipper
+)
 
 if(UNIX)
     target_link_libraries(gdstk m)
@@ -98,10 +107,12 @@ endif(UNIX)
 source_group(
     TREE "${PROJECT_SOURCE_DIR}/include"
     PREFIX "Header Files"
-    FILES ${HEADER_LIST})
+    FILES ${HEADER_LIST}
+)
 
 install(TARGETS gdstk
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
     ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
     INCLUDES DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/gdstk
-    PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/gdstk)
+    PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/gdstk
+)
