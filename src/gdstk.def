@@ -5,6 +5,7 @@ EXPORTS
     gdstk_library_get_name
     gdstk_library_get_cell_count
     gdstk_library_get_cell
+    gdstk_library_get_top_cells
     gdstk_cell_get_name
     gdstk_cell_get_polygons
     gdstk_cell_get_paths

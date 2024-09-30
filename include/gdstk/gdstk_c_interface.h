@@ -20,8 +20,9 @@ void gdstk_library_free(Library_t* library);
 const char* gdstk_library_get_name(const Library_t* library);
 uint64_t gdstk_library_get_cell_count(const Library_t* library);
 Cell_t* gdstk_library_get_cell(const Library_t* library, uint64_t index);
-const char* gdstk_cell_get_name(const Cell_t* cell);
+int gdstk_library_get_top_cells(const Library_t* library, Cell_t*** top_cells, int* count);
 
+const char* gdstk_cell_get_name(const Cell_t* cell);
 int gdstk_cell_get_polygons(const Cell_t* cell, Polygon_t** polygons, int* count);
 int gdstk_cell_get_paths(const Cell_t* cell, Path_t** paths, int* count);
 int gdstk_cell_get_references(const Cell_t* cell, CellReference_t** references, int* count);

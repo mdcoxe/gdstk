@@ -14,6 +14,7 @@ Library_t* gdstk_read_gds(const char* filename, double unit, double tolerance, i
     return reinterpret_cast<Library_t*>(lib);
 }
 
+//Library
 void gdstk_library_free(Library_t* library) {
     delete reinterpret_cast<gdstk::Library*>(library);
 }
@@ -34,6 +35,23 @@ Cell_t* gdstk_library_get_cell(const Library_t* library, uint64_t index) {
     return nullptr;
 }
 
+int gdstk_library_get_top_cells(const Library_t* library,Cell_t*** top_cells, int* count){
+    const gdstk::Library* cpp_library = reinterpret_cast<const gdstk::Library*>(library);
+
+    gdstk::Array<gdstk::Cell*> top_cell_array = {};
+    gdstk::Array<gdstk::RawCell*> top_rawcell_array = {};
+
+    cpp_library->top_level(top_cell_array, top_rawcell_array);
+
+    *count = static_cast<int>(top_cell_array.count);
+    *top_cells = reinterpret_cast<Cell_t**>(top_cell_array.items);
+
+    top_rawcell_array.clear();
+
+    return 0;
+}
+
+//Cells
 const char* gdstk_cell_get_name(const Cell_t* cell) {
     return reinterpret_cast<const gdstk::Cell*>(cell)->name;
 }
@@ -59,6 +77,8 @@ int gdstk_cell_get_references(const Cell_t* cell, CellReference_t** references, 
     return 0;
 }
 
+
+//Polygons
 int gdstk_polygon_get_points(const Polygon_t* polygon, double** points, int* count) {
     const gdstk::Polygon* cpp_polygon = reinterpret_cast<const gdstk::Polygon*>(polygon);
     *count = static_cast<int>(cpp_polygon->point_array.count);
@@ -66,16 +86,17 @@ int gdstk_polygon_get_points(const Polygon_t* polygon, double** points, int* cou
     return 0;
 }
 
+int gdstk_polygon_get_layer(const Polygon_t* polygon) {
+    const gdstk::Polygon* cpp_polygon = reinterpret_cast<const gdstk::Polygon*>(polygon);
+    return gdstk::get_layer(cpp_polygon->tag);
+}
+
+//Paths
 int gdstk_path_get_points(const Path_t* path, double** points, int* count) {
     const gdstk::FlexPath* cpp_path = reinterpret_cast<const gdstk::FlexPath*>(path);
     *count = static_cast<int>(cpp_path->spine.point_array.count);
     *points = reinterpret_cast<double*>(cpp_path->spine.point_array.items);
     return 0;
-}
-
-int gdstk_polygon_get_layer(const Polygon_t* polygon) {
-    const gdstk::Polygon* cpp_polygon = reinterpret_cast<const gdstk::Polygon*>(polygon);
-    return gdstk::get_layer(cpp_polygon->tag);
 }
 
 double gdstk_path_get_width(const Path_t* path) {
@@ -94,6 +115,8 @@ int gdstk_path_get_layer(const Path_t* path) {
     return 0;
 }
 
+
+//Reference
 const char* gdstk_reference_get_cell_name(const CellReference_t* reference) {
     const gdstk::Reference* cpp_reference = reinterpret_cast<const gdstk::Reference*>(reference);
     return cpp_reference->type == gdstk::ReferenceType::Cell ? cpp_reference->cell->name : nullptr;
